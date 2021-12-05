@@ -2,7 +2,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Contact from './views/Contact';
-import Details from './views/Details';
+import Details, { DetailsProps } from './views/Details';
+
+export type RootStackParamList = {
+  Contact: undefined;
+  Details: DetailsProps;
+};
 
 const Stack = createNativeStackNavigator();
 

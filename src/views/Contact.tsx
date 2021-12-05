@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   FlatList,
   ListRenderItem,
@@ -9,7 +11,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { RootStackParamList } from '../App';
 import data from '../assets/data.json';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export interface ContactDetails {
   id: string;
@@ -19,9 +23,28 @@ export interface ContactDetails {
   email: string;
 }
 
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Contact'>;
+
 const Contact = () => {
   const [contactList, setContactList] = useState(data as ContactDetails[]);
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation<NavigationProps>();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center',
+      headerLeft: () => (
+        <TouchableOpacity>
+          <Icon name="search" size={24} color="#ff8c00" />
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <TouchableOpacity>
+          <Icon name="plus" size={24} color="#ff8c00" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const refreshContact = () => {
     setRefreshing(true);
@@ -40,7 +63,9 @@ const Contact = () => {
   };
 
   const renderItem: ListRenderItem<ContactDetails> = ({ item }) => {
-    const onPress = () => {};
+    const onPress = () => {
+      navigation.navigate('Details', { contactDetails: item, updateContact });
+    };
 
     return (
       <TouchableOpacity style={styles.list} onPress={onPress}>
